@@ -17,6 +17,7 @@ RUN set -o errexit -o nounset \
 		ca-certificates \
 		openssl \
 		unzip \
+		sudo \
 	\
 	&& echo "Downloading Gradle" \
 	&& wget -O gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
