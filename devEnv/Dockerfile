@@ -11,13 +11,13 @@ RUN set -o errexit -o nounset \
 	&& apk add --no-cache \
 		bash \
 		libstdc++ \
+		sudo \
 	\
 	&& echo "Installing build dependencies" \
 	&& apk add --no-cache --virtual .build-deps \
 		ca-certificates \
 		openssl \
 		unzip \
-		sudo \
 	\
 	&& echo "Downloading Gradle" \
 	&& wget -O gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
