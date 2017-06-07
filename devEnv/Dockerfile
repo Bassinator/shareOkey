@@ -7,6 +7,8 @@ ENV GRADLE_VERSION 3.5
 
 ARG GRADLE_DOWNLOAD_SHA256=0b7450798c190ff76b9f9a3d02e18b33d94553f708ebc08ebe09bdf99111d110
 RUN set -o errexit -o nounset \
+        && echo "updateing apk index" \
+	&& apk update \
 	&& echo "Installing dependencies" \
 	&& apk add --no-cache \
 		bash \
