@@ -12,6 +12,9 @@ RUN set -o errexit -o nounset \
 		bash \
 		libstdc++ \
 		sudo \
+        && echo "Installing eclipse che dependencies" \
+	&& apk add --no-cache \
+		sudo \
 	\
 	&& echo "Installing build dependencies" \
 	&& apk add --no-cache --virtual .build-deps \
@@ -43,7 +46,7 @@ RUN set -o errexit -o nounset \
 
 EXPOSE 22 8000 8080
 
-USER user
+USER gradle
 
 WORKDIR /projects
 
