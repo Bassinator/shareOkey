@@ -39,7 +39,7 @@ RUN set -o errexit -o nounset \
 	&& echo "Adding gradle user and group" \
 	&& addgroup -S -g 1000 gradle \
 	&& adduser -D -S -G gradle -u 1000 -s /bin/ash gradle \
-	&& echo "%root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+	&& echo "%root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
 	&& mkdir /home/gradle/.gradle \
 	&& chown -R gradle:gradle /home/gradle
 
