@@ -40,13 +40,14 @@ RUN set -o errexit -o nounset \
 	&& mkdir /home/gradle/.gradle \
 	&& chown -R gradle:gradle /home/gradle
 
-# Create Gradle volume
-USER gradle
-VOLUME "/home/gradle/.gradle"
-WORKDIR /home/gradle
 
-RUN set -o errexit -o nounset \
-	&& echo "Testing Gradle installation" \
-	&& gradle --version
+EXPOSE 22 8000 8080
 
-CMD bash
+USER user
+
+WORKDIR /projects
+
+CMD sudo /usr/bin/ssh-keygen -A && \
+    sudo /usr/sbin/sshd -D && \
+    sudo su - && \
+    tail -f /dev/null
