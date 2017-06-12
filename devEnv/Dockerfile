@@ -1,54 +1,31 @@
-FROM frolvlad/alpine-oraclejdk8 
+FROM openjdk:8u111-jre-alpine
 
-CMD ["gradle"]
+ENV LANG=C.UTF-8 \
+    DOCKER_VERSION=1.6.0 \
+    DOCKER_BUCKET=get.docker.com \
+    CHE_IN_CONTAINER=true \
+    MAVEN_VERSION=3.3.9
+ENV M2_HOME=/usr/lib/apache-maven-$MAVEN_VERSION
+ENV PATH=${PATH}:${M2_HOME}/bin
 
-ENV GRADLE_HOME /opt/gradle
-ENV GRADLE_VERSION 3.5
-
-ARG GRADLE_DOWNLOAD_SHA256=0b7450798c190ff76b9f9a3d02e18b33d94553f708ebc08ebe09bdf99111d110
-RUN set -o errexit -o nounset \
-        && echo "updateing apk index" \
-	&& apk update \
-	&& echo "Installing dependencies" \
-	&& apk add --no-cache \
-		bash \
-		libstdc++ \
-        && echo "Installing eclipse che dependencies" \
-	&& apk add --no-cache \
-		sudo \
-	\
-	&& echo "Installing build dependencies" \
-	&& apk add --no-cache --virtual .build-deps \
-		ca-certificates \
-		openssl \
-		unzip \
-	\
-	&& echo "Downloading Gradle" \
-	&& wget -O gradle.zip "https://services.gradle.org/distributions/gradle-${GRADLE_VERSION}-bin.zip" \
-	\
-	&& echo "Checking download hash" \
-	&& echo "${GRADLE_DOWNLOAD_SHA256} *gradle.zip" | sha256sum -c - \
-	\
-	&& echo "Installing Gradle" \
-	&& unzip gradle.zip \
-	&& rm gradle.zip \
-	&& mkdir /opt \
-	&& mv "gradle-${GRADLE_VERSION}" "${GRADLE_HOME}/" \
-	&& ln -s "${GRADLE_HOME}/bin/gradle" /usr/bin/gradle \
-	\
-	&& apk del .build-deps \
-	\
-	&& echo "Adding gradle user and group" \
-	&& addgroup -S -g 1000 gradle \
-	&& adduser -D -S -G gradle -u 1000 -s /bin/bash gradle \
-	&& echo "%gradle ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers \
-	&& mkdir /home/gradle/.gradle \
-	&& chown -R gradle:gradle /home/gradle
-
+RUN echo "http://dl-4.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
+    apk add --update curl ca-certificates bash openssh unzip openssl shadow && \
+    curl -sSL "https://${DOCKER_BUCKET}/builds/Linux/x86_64/docker-${DOCKER_VERSION}" -o /usr/bin/docker && \
+    chmod +x /usr/bin/docker && \
+    cd /tmp && \
+    wget -q "http://apache.ip-connect.vn.ua/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
+    tar -xzf "apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
+    mv "/tmp/apache-maven-$MAVEN_VERSION" "/usr/lib" && \
+    echo "%root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    rm -rf /tmp/* /var/cache/apk/* && \
+    adduser -S user -h /home/user -s /bin/bash -G root -u 1000 && \
+    echo "%root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
+    usermod -p "*" user && \
+    chown -R user /home/user/
 
 EXPOSE 22 8000 8080
 
-USER gradle
+USER user
 
 WORKDIR /projects
 
