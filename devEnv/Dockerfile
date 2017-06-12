@@ -4,18 +4,12 @@ ENV LANG=C.UTF-8 \
     DOCKER_VERSION=1.6.0 \
     DOCKER_BUCKET=get.docker.com \
     CHE_IN_CONTAINER=true \
-    MAVEN_VERSION=3.3.9
-ENV M2_HOME=/usr/lib/apache-maven-$MAVEN_VERSION
-ENV PATH=${PATH}:${M2_HOME}/bin
 
 RUN echo "http://dl-4.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories && \
     apk add --update curl ca-certificates bash openssh unzip openssl shadow && \
     curl -sSL "https://${DOCKER_BUCKET}/builds/Linux/x86_64/docker-${DOCKER_VERSION}" -o /usr/bin/docker && \
     chmod +x /usr/bin/docker && \
     cd /tmp && \
-    wget -q "http://apache.ip-connect.vn.ua/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
-    tar -xzf "apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
-    mv "/tmp/apache-maven-$MAVEN_VERSION" "/usr/lib" && \
     echo "%root ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers && \
     rm -rf /tmp/* /var/cache/apk/* && \
     adduser -S user -h /home/user -s /bin/bash -G root -u 1000 && \
