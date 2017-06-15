@@ -1,4 +1,4 @@
-FROM eclipse/ubuntu_gradle
+FROM codenvy/ubuntu_gradle
 
 RUN sudo apt-get update && \
     echo Setup for non interactive installation prerequisite for apt-get && \
