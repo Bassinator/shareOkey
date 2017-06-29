@@ -1,5 +1,8 @@
 FROM codenvy/ubuntu_gradle
 
+
+EXPOSE 8883 8443 443
+
 RUN sudo apt-get update && \
     echo Setup for non interactive installation prerequisite for apt-get && \
     # see https://goo.gl/J1oFMd for explanation of the next line
